@@ -190,13 +190,42 @@ function renderBadge(value: string): string {
   return `<span class="badge" style="background:${style.bg};color:${style.color}">${value}</span>`;
 }
 
+// Known status values for table cell badge replacement
+const STATUS_VALUES = [
+  'Active · On track',
+  'Active · Needs attention',
+  'Paused',
+  'Complete',
+  'Upcoming',
+  'In progress',
+  'In review',
+  'Delivered',
+];
+
 // Replace **Status:** lines in rendered HTML with badge elements
+// Also replaces known status values appearing as plain text in table cells
 function applyStatusBadges(html: string): string {
   // Matches: <p><strong>Status:</strong> value</p>
-  return html.replace(
+  let result = html.replace(
     /<p><strong>Status:<\/strong>\s*([^<]+)<\/p>/g,
     (_match, value) => `<p class="status-line">${renderBadge(value.trim())}</p>`
   );
+
+  // Replace known status values inside table cells <td>value</td>
+  for (const status of STATUS_VALUES) {
+    const escaped = status.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/·/g, '·');
+    result = result.replace(
+      new RegExp(`<td>${escaped}<\\/td>`, 'g'),
+      `<td>${renderBadge(status)}</td>`
+    );
+    // Also handle bolded current-phase rows: <td><strong>value</strong></td>
+    result = result.replace(
+      new RegExp(`<td><strong>${escaped}<\\/strong><\\/td>`, 'g'),
+      `<td>${renderBadge(status)}</td>`
+    );
+  }
+
+  return result;
 }
 
 // ---------------------------------------------------------------------------
@@ -1002,7 +1031,9 @@ async function renderClientPage(files: GitHubFile[], env: Env): Promise<string> 
       navLinks.push({ label: h2Label || 'Overview', slug });
 
       const rendered = await marked.parse(bodyWithoutH1);
-      const processed = postProcess(rendered, 'overview');
+      // Strip the first <h2> from rendered output — we render it explicitly in the section wrapper
+      const renderedWithoutH2 = rendered.replace(/^<h2>[^<]*<\/h2>\n?/i, '');
+      const processed = postProcess(renderedWithoutH2, 'overview');
 
       sections.push({
         slug,
