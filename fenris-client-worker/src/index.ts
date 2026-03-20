@@ -169,15 +169,15 @@ function extractH2(markdown: string): string {
 // Status badge renderer
 // ---------------------------------------------------------------------------
 
+// Blue = active/in-flight, Amber = attention/blocked, Green = done, Grey = not started/unknown
 const BADGE_STYLES: Record<string, { bg: string; color: string }> = {
-  'active-on-track':        { bg: '#dcfce7', color: '#166534' },
-  'active-needs-attention': { bg: '#fef9c3', color: '#854d0e' },
-  'paused':                 { bg: '#f1f5f9', color: '#475569' },
-  'complete':               { bg: '#f1f5f9', color: '#475569' },
-  'upcoming':               { bg: '#dbeafe', color: '#1e40af' },
-  'in-progress':            { bg: '#dbeafe', color: '#1e40af' },
-  'in-review':              { bg: '#fef9c3', color: '#854d0e' },
-  'delivered':              { bg: '#dcfce7', color: '#166534' },
+  'active-on-track':        { bg: '#dbeafe', color: '#1e40af' },  // blue
+  'in-progress':            { bg: '#dbeafe', color: '#1e40af' },  // blue
+  'active-needs-attention': { bg: '#fef9c3', color: '#854d0e' },  // amber
+  'paused':                 { bg: '#fef9c3', color: '#854d0e' },  // amber
+  'delivered':              { bg: '#dcfce7', color: '#166534' },  // green
+  'complete':               { bg: '#dcfce7', color: '#166534' },  // green
+  'upcoming':               { bg: '#f1f5f9', color: '#475569' },  // grey
 };
 
 function badgeSlug(value: string): string {
@@ -198,7 +198,6 @@ const STATUS_VALUES = [
   'Complete',
   'Upcoming',
   'In progress',
-  'In review',
   'Delivered',
 ];
 
