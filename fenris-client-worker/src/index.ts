@@ -230,23 +230,45 @@ function applyStatusBadges(html: string): string {
 
 // ---------------------------------------------------------------------------
 // Project metadata fields renderer
-// Converts <p><strong>End client:</strong> value</p> etc into labelled rows
+// Converts **Field:** value lines (rendered as <p> or <br>-separated lines)
+// into labelled meta rows, with Status rendered as a badge
 // ---------------------------------------------------------------------------
 
-const PROJECT_META_FIELDS = ['End client', 'Period', 'Budget'];
+const PROJECT_META_FIELDS = ['Status', 'End client', 'Period', 'Budget'];
 
 function applyProjectMeta(html: string): string {
-  for (const field of PROJECT_META_FIELDS) {
-    const re = new RegExp(
-      `<p><strong>${field}:<\\/strong>\\s*([^<]+)<\\/p>`,
-      'g'
-    );
+  // marked renders trailing-space line breaks as <br> within a single <p>
+  // e.g. <p><strong>Status:</strong> Active · On track<br>\n<strong>End client:</strong> ...
+  // Split those into individual lines first, then process each
+
+  // Step 1: replace <br> inside project meta paragraphs with a sentinel
+  // We process each <p> that starts with a known meta field
+  html = html.replace(
+    /<p>(<strong>(?:Status|End client|Period|Budget):[\s\S]*?)<\/p>/g,
+    (_match, inner) => {
+      // Split on <br> boundaries
+      const lines = inner.split(/<br\s*\/?>\n?/);
+      return lines.map((line: string) => `<p>${line.trim()}</p>`).join('\n');
+    }
+  );
+
+  // Step 2: convert Status lines to badge rows
+  html = html.replace(
+    /<p><strong>Status:<\/strong>\s*([^<]+)<\/p>/g,
+    (_match, value) =>
+      `<div class="project-meta-row"><span class="meta-label">Status</span><span class="meta-value">${renderBadge(value.trim())}</span></div>`
+  );
+
+  // Step 3: convert other meta fields to labelled rows
+  for (const field of ['End client', 'Period', 'Budget']) {
+    const re = new RegExp(`<p><strong>${field}:<\\/strong>\\s*([^<]+)<\\/p>`, 'g');
     html = html.replace(
       re,
       (_match, value) =>
         `<div class="project-meta-row"><span class="meta-label">${field}</span><span class="meta-value">${value.trim()}</span></div>`
     );
   }
+
   return html;
 }
 
