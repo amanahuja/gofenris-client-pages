@@ -133,9 +133,10 @@ async function fetchGitHubFile(path: string, env: Env): Promise<string> {
   const file: GitHubFile = await res.json();
   if (!file.content) return '';
 
-  // GitHub returns base64 with newlines; decode it
+  // GitHub returns base64 with newlines; decode as UTF-8 to handle multi-byte characters
   const cleaned = file.content.replace(/\n/g, '');
-  return atob(cleaned);
+  const bytes = Uint8Array.from(atob(cleaned), c => c.charCodeAt(0));
+  return new TextDecoder('utf-8').decode(bytes);
 }
 
 // ---------------------------------------------------------------------------
