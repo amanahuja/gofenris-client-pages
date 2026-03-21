@@ -210,19 +210,34 @@ function applyStatusBadges(html: string): string {
     (_match, value) => `<p class="status-line">${renderBadge(value.trim())}</p>`
   );
 
-  // Replace known status values inside table cells <td>value</td>
-  for (const status of STATUS_VALUES) {
-    const escaped = status.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/·/g, '·');
-    result = result.replace(
-      new RegExp(`<td>${escaped}<\\/td>`, 'g'),
-      `<td>${renderBadge(status)}</td>`
-    );
-    // Also handle bolded current-phase rows: <td><strong>value</strong></td>
-    result = result.replace(
-      new RegExp(`<td><strong>${escaped}<\\/strong><\\/td>`, 'g'),
-      `<td>${renderBadge(status)}</td>`
-    );
-  }
+  // Replace status values in table cells — only in columns headed "Status"
+  result = result.replace(/<table>[\s\S]*?<\/table>/g, (table) => {
+    // Find the index of the Status column from the header row
+    const theadMatch = table.match(/<thead>([\s\S]*?)<\/thead>/);
+    if (!theadMatch) return table;
+    const headers = [...theadMatch[1].matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map(m => m[1].trim());
+    const statusCol = headers.findIndex(h => h.toLowerCase() === 'status');
+    if (statusCol === -1) return table;
+
+    // Badge the cell at statusCol in every body row
+    return table.replace(/<tr>([\s\S]*?)<\/tr>/g, (row, inner) => {
+      const cellMatches = [...inner.matchAll(/<td([^>]*)>([\s\S]*?)<\/td>/g)];
+      if (cellMatches.length <= statusCol) return row;
+      const cell = cellMatches[statusCol];
+      const attrs = cell[1];
+      const content = cell[2].trim();
+      // Strip <strong> wrapping (bolded current-phase rows) to get plain value
+      const plainValue = content.replace(/^<strong>([\s\S]*?)<\/strong>$/, '$1').trim();
+      // Only replace if not already a badge
+      if (!plainValue.includes('<') && plainValue.length > 0) {
+        return row.replace(
+          `<td${attrs}>${cell[2]}</td>`,
+          `<td${attrs}>${renderBadge(plainValue)}</td>`
+        );
+      }
+      return row;
+    });
+  });
 
   return result;
 }
