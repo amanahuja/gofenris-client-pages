@@ -914,6 +914,7 @@ function getStyles(): string {
         scrollbar-width: none;
       }
       .site-nav .nav-links::-webkit-scrollbar { display: none; }
+      .site-nav .wordmark { display: none; }
       .page-container { padding: 1.5rem 1rem 3rem; }
       .overview-meta-row { flex-direction: column; gap: 1rem; }
     }
@@ -1138,10 +1139,9 @@ async function renderClientPage(files: GitHubFile[], env: Env): Promise<string> 
   </div>
 
   <footer class="site-footer">
-    <span>© ${year} Fenris. Confidential.</span>
-    <a href="#">Privacy Policy</a>
-    <a href="#">Terms</a>
-    <a href="#">Contact</a>
+    <span>© ${year} Fenris.</span>
+    <a href="https://gofenris.com/privacy-policy/">Privacy Policy</a>
+    <a href="https://gofenris.com/#contact">Contact</a>
   </footer>
 
   <script>${getNavScript()}</script>
