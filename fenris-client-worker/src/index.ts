@@ -981,7 +981,7 @@ function renderEntryForm(error = false): string {
     <div class="entry-card">
       <img src="https://raw.githubusercontent.com/gofenris/gofenris.github.io/main/static/images/fenris/fenris_logo_2ct_nb.png" alt="Fenris">
       <form method="POST" action="/">
-        <label for="code">Enter your client code</label>
+        <label for="code">Enter your partner code</label>
         <input type="text" id="code" name="code" placeholder="e.g. ACME01" autocomplete="off" autocapitalize="characters" spellcheck="false">
         ${errorHtml}
         <button type="submit">View your engagement</button>
@@ -1124,14 +1124,14 @@ async function renderClientPage(files: GitHubFile[], env: Env): Promise<string> 
 </head>
 <body>
   <nav class="site-nav">
-    <span class="wordmark">Fenris</span>
+    <a href="https://gofenris.com" class="wordmark">Fenris</a>
     <ul class="nav-links">
         ${navLinksHtml}
     </ul>
   </nav>
 
   <div class="page-container">
-    <span class="client-label">Fenris Secure Client Portal</span>
+    <span class="client-label">Fenris Secure Partner Portal</span>
     <h1>${pageTitle}</h1>
     ${summary ? `<p class="summary">${summary}</p>` : ''}
 
@@ -1139,7 +1139,7 @@ async function renderClientPage(files: GitHubFile[], env: Env): Promise<string> 
   </div>
 
   <footer class="site-footer">
-    <span>© ${year} Fenris.</span>
+    <span>© ${year} Fenris</span>
     <a href="https://gofenris.com/privacy-policy/">Privacy Policy</a>
     <a href="https://gofenris.com/#contact">Contact</a>
   </footer>
