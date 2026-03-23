@@ -905,7 +905,15 @@ function getStyles(): string {
     @media (max-width: 600px) {
       h1 { font-size: 2rem; }
       .site-nav { padding: 0 1rem; }
-      .site-nav .nav-links { gap: 1rem; }
+      .site-nav .nav-links {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 1.1rem;
+        font-size: 0.8rem;
+        scrollbar-width: none;
+      }
+      .site-nav .nav-links::-webkit-scrollbar { display: none; }
       .page-container { padding: 1.5rem 1rem 3rem; }
       .overview-meta-row { flex-direction: column; gap: 1rem; }
     }
@@ -927,7 +935,10 @@ function getNavScript(): string {
           if (entry.isIntersecting) {
             navLinks.forEach(function(a) { a.classList.remove('active'); });
             const link = document.querySelector('.nav-links a[href="#' + entry.target.id + '"]');
-            if (link) link.classList.add('active');
+            if (link) {
+              link.classList.add('active');
+              link.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+            }
           }
         });
       }, { rootMargin: '-20% 0px -70% 0px' });
