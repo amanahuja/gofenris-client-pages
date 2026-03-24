@@ -1,4 +1,4 @@
-# Fenris Client Portal — Operations Reference
+# Fenris Partner Portal — Operations Reference
 
 ## Development & deployment
 
@@ -9,16 +9,16 @@ just deploy    # deploy to Cloudflare
 
 ---
 
-## Managing client codes
+## Managing partner codes
 
-Client codes are stored in Cloudflare KV (`CLIENT_CODES` namespace). Each entry maps a short code to a GitHub folder path.
+Partner codes are stored in Cloudflare KV (`CLIENT_CODES` namespace). Each entry maps a short code to a GitHub folder path.
 
 KV value format:
 ```json
 { "label": "Acme Corp — Q1 2026", "github_folder": "clients/acme" }
 ```
 
-### Add a new client
+### Add a new partner
 
 **Step 1 — Create the content folder in `gofenris/fenris-clients`:**
 
@@ -35,14 +35,14 @@ Frontmatter schema for `01-overview.md`:
 ---
 type: Retainer
 timeline: Jan 2026 – Present
-funder_chain: Funder → Client → Fenris
+funder_chain: Funder → Partner → Fenris
 summary: One sentence describing the engagement.
 team:
   - name: Name
     role: Role
 ---
 
-# Client Name — Engagement Title
+# Partner Name — Engagement Title
 
 ## Overview
 
@@ -55,11 +55,11 @@ Narrative paragraph.
 just set-client ACME01 "Acme Corp — Q1 2026" clients/acme
 ```
 
-**Step 3 — Share the code with the client.**
+**Step 3 — Share the code with the partner.**
 
 ---
 
-### Edit a client code (change label or folder)
+### Edit a partner code (change label or folder)
 
 Re-run `set-client` with the same code — it overwrites the existing entry:
 
@@ -71,7 +71,7 @@ To edit via the Cloudflare dashboard: Workers & Pages → KV → `CLIENT_CODES` 
 
 ---
 
-### Revoke a client code
+### Revoke a partner code
 
 ```bash
 just revoke-client ACME01
@@ -95,7 +95,7 @@ just get-client ACME01
 
 ---
 
-## Updating client content
+## Updating partner content
 
 Edit markdown files in `gofenris/fenris-clients` and push. Changes are live immediately — no Worker redeployment needed.
 

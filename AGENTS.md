@@ -1,19 +1,19 @@
-# Fenris Client Pages — Agent Instructions
+# Fenris Partner Portal — Agent Instructions
 
 ## What this project is
 
-A lightweight, secure client portal served by a Cloudflare Worker at `client.gofenris.com`. Clients enter a short code to view a single rendered HTML page summarising their engagement with Fenris. No login, no framework, no database — the Worker fetches markdown files from a private GitHub repo and returns a complete HTML document.
+A lightweight, secure partner portal served by a Cloudflare Worker at `client.gofenris.com`. Partners enter a short code to view a single rendered HTML page summarising their engagement with Fenris. No login, no framework, no database — the Worker fetches markdown files from a private GitHub repo and returns a complete HTML document.
 
 ## What to build
 
-A single Cloudflare Worker at `worker/src/index.js`. When complete, the worker directory should look like:
+The Worker is implemented at `fenris-client-worker/src/index.ts`. The worker directory looks like:
 
 ```
-worker/
-├── wrangler.toml
+fenris-client-worker/
+├── wrangler.jsonc
 ├── package.json
 └── src/
-    └── index.js
+    └── index.ts
 ```
 
 Follow `.llm/IMPLEMENTATION_PLAN.md` for the step-by-step setup (Wrangler, KV, secrets, deployment). Follow `.llm/DESIGN_REFERENCE.md` for all rendering and styling decisions.
@@ -51,7 +51,7 @@ The mockup uses illustrative content that does not match the example client file
 - **No hardcoded section names.** Section nav labels must always be derived from the first `##` in each markdown file.
 - **No H1 except from the first file.** Only `01-overview.md` contains an H1; it becomes the page title.
 - **Render whatever files exist.** Do not assume a fixed set of section files. Sort by filename; the numeric prefix controls order.
-- **Fenris wordmark is text, not an image.** Render "Fenris" in the nav as a styled text element using Manrope bold and `--color-primary`. No logo image file needed.
+- **Fenris wordmark is text, not an image.** Render "Fenris" in the nav as a styled `<a>` element linking to `https://gofenris.com`, using Manrope bold and `--color-primary`. No logo image file needed. Hidden on mobile.
 
 ## Logo and brand assets
 
