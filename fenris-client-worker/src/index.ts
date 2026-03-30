@@ -292,16 +292,22 @@ function applyProjectMeta(html: string): string {
 // ---------------------------------------------------------------------------
 
 function applyWorkstreamCards(html: string): string {
-  // Split on <h3> boundaries, keeping the delimiter
-  const parts = html.split(/(?=<h3[^>]*>)/);
-  if (parts.length <= 1) return html;
+  const hrIndex = html.indexOf('<hr>');
+  const activePart = hrIndex !== -1 ? html.slice(0, hrIndex) : html;
+  const mutedPart = hrIndex !== -1 ? html.slice(hrIndex + 4) : '';
 
-  return parts
-    .map((part) => {
-      if (!part.startsWith('<h3')) return part;
-      return `<div class="workstream-card">${part}</div>`;
-    })
-    .join('');
+  function wrapWorkstreams(source: string, muted: boolean): string {
+    const parts = source.split(/(?=<h3[^>]*>)/);
+    return parts
+      .map((part) => {
+        if (!part.startsWith('<h3')) return part;
+        const cls = muted ? 'workstream-card muted' : 'workstream-card';
+        return `<div class="${cls}">${part}</div>`;
+      })
+      .join('');
+  }
+
+  return wrapWorkstreams(activePart, false) + (mutedPart ? wrapWorkstreams(mutedPart, true) : '');
 }
 
 // ---------------------------------------------------------------------------
