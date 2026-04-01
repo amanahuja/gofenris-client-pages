@@ -988,7 +988,7 @@ function renderEntryForm(error = false): string {
       <img src="https://raw.githubusercontent.com/gofenris/gofenris.github.io/main/static/images/fenris/fenris_logo_2ct_nb.png" alt="Fenris">
       <form method="POST" action="/">
         <label for="code">Enter your partner code</label>
-        <input type="text" id="code" name="code" placeholder="e.g. ACME01" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <input type="text" id="code" name="code" placeholder="e.g. ABCD1234" autocomplete="off" autocapitalize="characters" spellcheck="false">
         ${errorHtml}
         <button type="submit">View your engagement</button>
       </form>
